@@ -17,6 +17,8 @@ class MentalHealthTrackerApp extends StatefulWidget {
 }
 
 class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
+  List<String> responses = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,28 +47,27 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
     return ListView.builder(
         itemCount: questions.length,
         itemBuilder: (context, index) {
-          return _buildQuestion('${questions[index]}');
+          return _buildQuestion('${questions[index]}', index);
         });
   }
 
-  Widget _buildQuestion(String question) {
-    List<String> options = Survey.getOptions();
+  Widget _buildQuestion(String question, int questionIndex) {
+    List<OptionScore> optionScores = Survey.getOptionScores();
     return Row(
       children: [
         Expanded(child: Text(question)),
         Expanded(
-            child: DropdownButton<String>(
-          items: options.map<DropdownMenuItem<String>>((String value) {
-            return DropdownMenuItem<String>(
-              value: value,
-              child: Text(value),
+            child: DropdownButton<int>(
+          items: optionScores
+              .map<DropdownMenuItem<int>>((OptionScore optionScore) {
+            return DropdownMenuItem<int>(
+              value: optionScore.score,
+              child: Text(optionScore.option),
             );
           }).toList(),
           hint: Text("Click to answer"),
-          onChanged: (String? newValue) {
-            setState(() {
-              // TODO
-            });
+          onChanged: (int? newValue) {
+            print(newValue);
           },
         )),
       ],

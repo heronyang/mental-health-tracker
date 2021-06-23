@@ -29,6 +29,10 @@ class Survey {
   static List<String> getOptions() {
     return _optionScores.map((optionScore) => optionScore.option).toList();
   }
+
+  static List<OptionScore> getOptionScores() {
+    return _optionScores;
+  }
 }
 
 class OptionScore {
