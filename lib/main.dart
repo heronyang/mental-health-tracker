@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'survey.dart';
 
@@ -29,22 +30,34 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
 
   @override
   Widget build(BuildContext context) {
+    String today = DateFormat('yyyy-MM-dd').format(new DateTime.now());
     return Scaffold(
-        appBar: AppBar(title: Text('Mental Health Tracker')),
-        body: Column(
-          children: <Widget>[
-            Column(children: <Widget>[_buildIntro()]),
-            Expanded(
-              child: _buildQuestions(),
-            ),
-          ],
-        ));
+      appBar: AppBar(title: Text('Mental Health Tracker')),
+      body: Column(
+        children: <Widget>[
+          _buildIntro(),
+          Expanded(
+            child: _buildQuestions(),
+          ),
+          Container(
+              padding: EdgeInsets.all(5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text('Today: ' + today),
+                  _buildSubmitButton(),
+                ],
+              )),
+        ],
+      ),
+    );
   }
 
   Widget _buildIntro() {
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
+        padding: EdgeInsets.all(15),
         child: Text(Survey.getIntro()),
       ),
     );
@@ -52,11 +65,15 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
 
   Widget _buildQuestions() {
     List<String> questions = Survey.getQuestions();
-    return ListView.builder(
-        itemCount: questions.length,
-        itemBuilder: (context, index) {
-          return _buildQuestion('${questions[index]}', index);
-        });
+    return ListView.separated(
+      itemCount: questions.length,
+      itemBuilder: (context, index) {
+        return _buildQuestion('${questions[index]}', index);
+      },
+      separatorBuilder: (context, index) {
+        return Divider();
+      },
+    );
   }
 
   Widget _buildQuestion(String question, int questionIndex) {
@@ -82,14 +99,15 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
     );
 
     return ListTile(title: questionWidget, trailing: optionWidget);
+  }
 
-    /*
-            Row(
-      children: [
-        Expanded(child: questionWidget),
-        Expanded(child: optionWidget),
-      ],
-    );
-    */
+  Widget _buildSubmitButton() {
+    return ElevatedButton(
+        onPressed: () {
+          print('submit');
+        },
+        child: Text('Submit'),
+        style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20)));
   }
 }
