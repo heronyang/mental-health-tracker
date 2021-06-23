@@ -61,29 +61,35 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
 
   Widget _buildQuestion(String question, int questionIndex) {
     List<OptionScore> optionScores = Survey.getOptionScores();
-    return Row(
+
+    Widget questionWidget = Text(question);
+    Widget optionWidget = DropdownButton<int>(
+      value: _scores[questionIndex],
+      items: optionScores.map<DropdownMenuItem<int>>((OptionScore optionScore) {
+        return DropdownMenuItem<int>(
+          value: optionScore.score,
+          child: Text(optionScore.option),
+        );
+      }).toList(),
+      onChanged: (int? newValue) {
+        if (newValue == null) {
+          return;
+        }
+        setState(() {
+          _scores[questionIndex] = newValue;
+        });
+      },
+    );
+
+    return ListTile(title: questionWidget, trailing: optionWidget);
+
+    /*
+            Row(
       children: [
-        Expanded(child: Text(question)),
-        Expanded(
-            child: DropdownButton<int>(
-          value: _scores[questionIndex],
-          items: optionScores
-              .map<DropdownMenuItem<int>>((OptionScore optionScore) {
-            return DropdownMenuItem<int>(
-              value: optionScore.score,
-              child: Text(optionScore.option),
-            );
-          }).toList(),
-          onChanged: (int? newValue) {
-            if (newValue == null) {
-              return;
-            }
-            setState(() {
-              _scores[questionIndex] = newValue;
-            });
-          },
-        )),
+        Expanded(child: questionWidget),
+        Expanded(child: optionWidget),
       ],
     );
+    */
   }
 }
