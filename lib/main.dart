@@ -17,7 +17,15 @@ class MentalHealthTrackerApp extends StatefulWidget {
 }
 
 class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
-  List<String> responses = [];
+  List<int> _scores = [];
+
+  @override
+  void initState() {
+    setState(() {
+      _scores = List<int>.filled(Survey.getQuestionSize(), 0);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +66,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
         Expanded(child: Text(question)),
         Expanded(
             child: DropdownButton<int>(
+          value: _scores[questionIndex],
           items: optionScores
               .map<DropdownMenuItem<int>>((OptionScore optionScore) {
             return DropdownMenuItem<int>(
@@ -65,9 +74,13 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
               child: Text(optionScore.option),
             );
           }).toList(),
-          hint: Text("Click to answer"),
           onChanged: (int? newValue) {
-            print(newValue);
+            if (newValue == null) {
+              return;
+            }
+            setState(() {
+              _scores[questionIndex] = newValue;
+            });
           },
         )),
       ],
