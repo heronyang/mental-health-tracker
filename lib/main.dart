@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'survey.dart';
 
 void main() {
+  String title = 'Mental Health Tracker';
   runApp(
     MaterialApp(
-        title: 'Mental Health Tracker',
-        home: MentalHealthTrackerApp(),
+        title: title,
+        home: MentalHealthTrackerApp(title: title),
         theme: new ThemeData(primarySwatch: Colors.teal)),
   );
 }
 
 class MentalHealthTrackerApp extends StatefulWidget {
+  MentalHealthTrackerApp({Key? key, required this.title}) : super(key: key);
+  final String title;
+
   @override
   MentalHealthTrackerState createState() => MentalHealthTrackerState();
 }
@@ -30,6 +34,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
     with SingleTickerProviderStateMixin {
   List<int> _pendingScores = [];
   List<HistoryRecord> _records = [];
+  final String storageKey = 'records';
 
   late TabController _tabController;
 
@@ -43,6 +48,53 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
     _tabController = TabController(vsync: this, length: tabs.length);
     _resetPendingScores();
     super.initState();
+    _loadRecords();
+  }
+
+  void _loadRecords() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _records = _decodeRecords(prefs.getString(storageKey) ?? "");
+    });
+  }
+
+  void _saveRecords() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      prefs.setString(storageKey, _encodeRecords(_records));
+    });
+  }
+
+  List<HistoryRecord> _decodeRecords(String encodedRecords) {
+    List<HistoryRecord> records = [];
+    for (var encodedRecord in encodedRecords.split('.')) {
+      if (encodedRecord.length == 0) {
+        continue;
+      }
+      var chunks = encodedRecord.split(',');
+      var timestamp = chunks[0];
+      var encodedScores = chunks[1];
+      List<int> scores = [];
+      encodedScores.runes.forEach((int rune) {
+        scores.add(int.parse(new String.fromCharCode(rune)));
+      });
+      records.add(HistoryRecord(timestamp, scores));
+    }
+    return records;
+  }
+
+  String _encodeRecords(List<HistoryRecord> records) {
+    // Custom format: <timestamp>,<scores>.<timestamp>:...
+    var buffer = new StringBuffer();
+    for (var record in records) {
+      buffer.write(record.timestamp);
+      buffer.write(",");
+      for (var score in record.scores) {
+        buffer.write("$score");
+      }
+      buffer.write(".");
+    }
+    return buffer.toString();
   }
 
   @override
@@ -55,7 +107,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mental Health Tracker'),
+        title: Text(widget.title),
         bottom: TabBar(
           controller: _tabController,
           tabs: tabs,
@@ -167,6 +219,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
     setState(() {
       _records.add(HistoryRecord(timestamp, _pendingScores));
     });
+    _saveRecords();
     _showSubmitConfirmationDialog();
   }
 
