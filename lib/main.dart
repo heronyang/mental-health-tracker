@@ -39,8 +39,8 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
   late TabController _tabController;
 
   static const List<Tab> tabs = <Tab>[
-    Tab(icon: Icon(Icons.edit_rounded)),
-    Tab(icon: Icon(Icons.trending_up_rounded)),
+    Tab(icon: Icon(Icons.edit)),
+    Tab(icon: Icon(Icons.trending_up)),
   ];
 
   @override
@@ -120,7 +120,6 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
           _buildResultView(),
         ],
       ),
-      floatingActionButton: _buildSubmitButton(),
     );
   }
 
@@ -148,8 +147,11 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
   Widget _buildQuestions() {
     List<String> questions = Survey.getQuestions();
     return ListView.separated(
-      itemCount: questions.length,
+      itemCount: questions.length + 1, // Submit button is the last row.
       itemBuilder: (context, index) {
+        if (index == questions.length) {
+          return _buildSubmitButton();
+        }
         return _buildQuestion('${questions[index]}', index);
       },
       separatorBuilder: (context, index) {
@@ -186,11 +188,14 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
   Widget _buildSubmitButton() {
     String timestamp =
         DateFormat('yyyy-MM-dd HH:mm').format(new DateTime.now());
-    return FloatingActionButton.extended(
-      onPressed: () => _commitPendingSurvey(timestamp),
-      label: const Text('Submit'),
-      icon: const Icon(Icons.send_rounded),
-    );
+    return ElevatedButton.icon(
+        onPressed: () => _commitPendingSurvey(timestamp),
+        icon: Icon(
+          Icons.send_rounded,
+        ),
+        label: Text('Submit'),
+        style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20)));
   }
 
   void _commitPendingSurvey(String timestamp) {
