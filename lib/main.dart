@@ -18,10 +18,10 @@ class MentalHealthTrackerApp extends StatefulWidget {
 }
 
 class HistoryRecord {
-  String date = "";
+  String timestamp = "";
   List<int> scores = [];
-  HistoryRecord(String date, List<int> scores) {
-    this.date = date;
+  HistoryRecord(String timestamp, List<int> scores) {
+    this.timestamp = timestamp;
     this.scores = new List<int>.from(scores);
   }
 }
@@ -72,7 +72,8 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
   }
 
   Widget _buildSurveyView() {
-    String today = DateFormat('yyyy-MM-dd').format(new DateTime.now());
+    String timestamp =
+        DateFormat('yyyy-MM-dd HH:mm').format(new DateTime.now());
     return Column(
       children: <Widget>[
         _buildIntro(),
@@ -85,8 +86,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildResetButton(),
-                Text('Today: ' + today),
-                _buildSubmitButton(today),
+                _buildSubmitButton(timestamp),
               ],
             )),
       ],
@@ -141,9 +141,9 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
     return ListTile(title: questionWidget, trailing: optionWidget);
   }
 
-  Widget _buildSubmitButton(String date) {
+  Widget _buildSubmitButton(String timestamp) {
     return ElevatedButton(
-        onPressed: () => _commitPendingSurvey(date),
+        onPressed: () => _commitPendingSurvey(timestamp),
         child: Text('Submit'),
         style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20)));
@@ -157,11 +157,11 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
             padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20)));
   }
 
-  void _commitPendingSurvey(String date) {
+  void _commitPendingSurvey(String timestamp) {
     // NOTE: Flutter doesn't update the UI after setting the state here if we
     // immediately jumps to the result page.
     setState(() {
-      _records.add(HistoryRecord(date, _pendingScores));
+      _records.add(HistoryRecord(timestamp, _pendingScores));
     });
     _showSubmitConfirmationDialog();
   }
@@ -179,7 +179,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
     return DataTable(
       columns: const <DataColumn>[
         DataColumn(
-          label: Text('Date', style: TextStyle(fontWeight: FontWeight.bold)),
+          label: Text('Time', style: TextStyle(fontWeight: FontWeight.bold)),
         ),
         DataColumn(
           label: Text('Score', style: TextStyle(fontWeight: FontWeight.bold)),
@@ -198,20 +198,25 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
 
   List<DataCell> _buildResultCells(HistoryRecord record) {
     int score = record.scores.reduce((a, b) => a + b);
-    String comment = "Unknown";
+    Widget comment = Icon(Icons.error_outline_rounded);
     if (score < 20) {
-      comment = "Well";
+      // "Well".
+      comment =
+          Icon(Icons.sentiment_satisfied_alt_rounded, color: Colors.green);
     } else if (score < 25) {
-      comment = "Mild";
+      // "Mild"
+      comment = Icon(Icons.sentiment_neutral_rounded, color: Colors.yellow);
     } else if (score < 30) {
-      comment = "Moderate";
+      // "Moderate;
+      comment = Icon(Icons.sentiment_dissatisfied_rounded, color: Colors.amber);
     } else {
-      comment = "Severe";
+      // "Severe"
+      comment = Icon(Icons.sentiment_very_dissatisfied, color: Colors.red);
     }
     return <DataCell>[
-      DataCell(Text(record.date)),
+      DataCell(Text(record.timestamp)),
       DataCell(Text('$score')),
-      DataCell(Text(comment))
+      DataCell(comment),
     ];
   }
 
