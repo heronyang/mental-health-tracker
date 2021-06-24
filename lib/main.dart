@@ -39,8 +39,8 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
   late TabController _tabController;
 
   static const List<Tab> tabs = <Tab>[
-    Tab(icon: Icon(Icons.edit)),
-    Tab(icon: Icon(Icons.trending_up)),
+    Tab(icon: Icon(Icons.edit_rounded)),
+    Tab(icon: Icon(Icons.trending_up_rounded)),
   ];
 
   @override
@@ -120,27 +120,17 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
           _buildResultView(),
         ],
       ),
+      floatingActionButton: _buildSubmitButton(),
     );
   }
 
   Widget _buildSurveyView() {
-    String timestamp =
-        DateFormat('yyyy-MM-dd HH:mm').format(new DateTime.now());
     return Column(
       children: <Widget>[
         _buildIntro(),
         Expanded(
           child: _buildQuestions(),
         ),
-        Container(
-            padding: EdgeInsets.all(5),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildResetButton(),
-                _buildSubmitButton(timestamp),
-              ],
-            )),
       ],
     );
   }
@@ -193,20 +183,14 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
     return ListTile(title: questionWidget, trailing: optionWidget);
   }
 
-  Widget _buildSubmitButton(String timestamp) {
-    return ElevatedButton(
-        onPressed: () => _commitPendingSurvey(timestamp),
-        child: Text('Submit'),
-        style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20)));
-  }
-
-  Widget _buildResetButton() {
-    return ElevatedButton(
-        onPressed: () => _resetPendingScores(),
-        child: Text('Reset'),
-        style: ElevatedButton.styleFrom(
-            padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20)));
+  Widget _buildSubmitButton() {
+    String timestamp =
+        DateFormat('yyyy-MM-dd HH:mm').format(new DateTime.now());
+    return FloatingActionButton.extended(
+      onPressed: () => _commitPendingSurvey(timestamp),
+      label: const Text('Submit'),
+      icon: const Icon(Icons.send_rounded),
+    );
   }
 
   void _commitPendingSurvey(String timestamp) {
