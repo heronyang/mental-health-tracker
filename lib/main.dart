@@ -6,9 +6,9 @@ import 'survey.dart';
 void main() {
   runApp(
     MaterialApp(
-      title: 'Mental Health Tracker',
-      home: MentalHealthTrackerApp(),
-    ),
+        title: 'Mental Health Tracker',
+        home: MentalHealthTrackerApp(),
+        theme: new ThemeData(primarySwatch: Colors.teal)),
   );
 }
 
@@ -158,6 +158,10 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
   }
 
   void _commitPendingSurvey(String timestamp) {
+    if (_pendingScores.contains(0)) {
+      _showMissingResponseDialog();
+      return;
+    }
     // NOTE: Flutter doesn't update the UI after setting the state here if we
     // immediately jumps to the result page.
     setState(() {
@@ -230,7 +234,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                Text('Go to result page new and history records.'),
+                Text('Go to result page to see records.'),
               ],
             ),
           ),
@@ -240,6 +244,33 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
               onPressed: () {
                 // Jumps to the result page.
                 _tabController.animateTo(1);
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showMissingResponseDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Oops!'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Text('Please select response to all answers.'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
