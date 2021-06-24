@@ -17,39 +17,69 @@ class MentalHealthTrackerApp extends StatefulWidget {
   MentalHealthTrackerState createState() => MentalHealthTrackerState();
 }
 
+class HistoryRecord {
+  String date = "";
+  List<int> scores = [];
+  HistoryRecord(String date, List<int> scores) {
+    this.date = date;
+    this.scores = scores;
+  }
+}
+
 class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
-  List<int> _scores = [];
+  List<int> _pendingScores = [];
+  List<HistoryRecord> _records = [];
 
   @override
   void initState() {
-    setState(() {
-      _scores = List<int>.filled(Survey.getQuestionSize(), 0);
-    });
+    _resetPendingScores();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    String today = DateFormat('yyyy-MM-dd').format(new DateTime.now());
-    return Scaffold(
-      appBar: AppBar(title: Text('Mental Health Tracker')),
-      body: Column(
-        children: <Widget>[
-          _buildIntro(),
-          Expanded(
-            child: _buildQuestions(),
+    return MaterialApp(
+      home: DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            bottom: TabBar(
+              tabs: [
+                Tab(icon: Icon(Icons.edit)),
+                Tab(icon: Icon(Icons.trending_up)),
+              ],
+            ),
+            title: Text('Mental Health Tracker'),
           ),
-          Container(
-              padding: EdgeInsets.all(5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text('Today: ' + today),
-                  _buildSubmitButton(),
-                ],
-              )),
-        ],
+          body: TabBarView(
+            children: [
+              _buildSurveyView(),
+              Icon(Icons.directions_transit),
+            ],
+          ),
+        ),
       ),
+    );
+  }
+
+  Widget _buildSurveyView() {
+    String today = DateFormat('yyyy-MM-dd').format(new DateTime.now());
+    return Column(
+      children: <Widget>[
+        _buildIntro(),
+        Expanded(
+          child: _buildQuestions(),
+        ),
+        Container(
+            padding: EdgeInsets.all(5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text('Today: ' + today),
+                _buildSubmitButton(today),
+              ],
+            )),
+      ],
     );
   }
 
@@ -81,7 +111,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
 
     Widget questionWidget = Text(question);
     Widget optionWidget = DropdownButton<int>(
-      value: _scores[questionIndex],
+      value: _pendingScores[questionIndex],
       items: optionScores.map<DropdownMenuItem<int>>((OptionScore optionScore) {
         return DropdownMenuItem<int>(
           value: optionScore.score,
@@ -93,7 +123,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
           return;
         }
         setState(() {
-          _scores[questionIndex] = newValue;
+          _pendingScores[questionIndex] = newValue;
         });
       },
     );
@@ -101,13 +131,24 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp> {
     return ListTile(title: questionWidget, trailing: optionWidget);
   }
 
-  Widget _buildSubmitButton() {
+  Widget _buildSubmitButton(String date) {
     return ElevatedButton(
         onPressed: () {
-          print('submit');
+          _commitPendingSurvey(date);
         },
         child: Text('Submit'),
         style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20)));
+  }
+
+  void _commitPendingSurvey(String date) {
+    _records.add(HistoryRecord(date, _pendingScores));
+    _resetPendingScores();
+  }
+
+  void _resetPendingScores() {
+    setState(() {
+      _pendingScores = List<int>.filled(Survey.getQuestionSize(), 0);
+    });
   }
 }
