@@ -1,22 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'localizations.dart';
 import 'survey.dart';
 
 void main() {
-  String title = 'Mental Health Tracker';
   runApp(
     MaterialApp(
-        title: title,
-        home: MentalHealthTrackerApp(title: title),
-        theme: new ThemeData(primarySwatch: Colors.teal)),
+      onGenerateTitle: (BuildContext context) =>
+          AppLocalizations.of(context).title,
+      home: MentalHealthTrackerApp(),
+      theme: new ThemeData(primarySwatch: Colors.teal),
+      localizationsDelegates: [
+        const AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en', ''),
+        const Locale('zh', ''),
+      ],
+    ),
   );
 }
 
 class MentalHealthTrackerApp extends StatefulWidget {
-  MentalHealthTrackerApp({Key? key, required this.title}) : super(key: key);
-  final String title;
-
+  MentalHealthTrackerApp({Key? key}) : super(key: key);
   @override
   MentalHealthTrackerState createState() => MentalHealthTrackerState();
 }
@@ -107,7 +118,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(AppLocalizations.of(context).title),
         bottom: TabBar(
           controller: _tabController,
           tabs: tabs,
@@ -193,7 +204,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
         icon: Icon(
           Icons.send_rounded,
         ),
-        label: Text('Submit'),
+        label: Text(AppLocalizations.of(context).button_submit),
         style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 50, vertical: 20)));
   }
@@ -223,15 +234,18 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
       return const Center(child: Text('No Record.'));
     }
     return DataTable(
-      columns: const <DataColumn>[
+      columns: <DataColumn>[
         DataColumn(
-          label: Text('Time', style: TextStyle(fontWeight: FontWeight.bold)),
+          label: Text(AppLocalizations.of(context).table_head_time,
+              style: TextStyle(fontWeight: FontWeight.bold)),
         ),
         DataColumn(
-          label: Text('Score', style: TextStyle(fontWeight: FontWeight.bold)),
+          label: Text(AppLocalizations.of(context).table_head_score,
+              style: TextStyle(fontWeight: FontWeight.bold)),
         ),
         DataColumn(
-          label: Text('Result', style: TextStyle(fontWeight: FontWeight.bold)),
+          label: Text(AppLocalizations.of(context).table_head_result,
+              style: TextStyle(fontWeight: FontWeight.bold)),
         ),
       ],
       rows: List<DataRow>.generate(
@@ -272,17 +286,17 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Succeed!'),
+          title: Text(AppLocalizations.of(context).dialog_succeed_title),
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                Text('Go to result page to see records.'),
+                Text(AppLocalizations.of(context).dialog_succeed_content),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Go'),
+              child: Text(AppLocalizations.of(context).dialog_succeed_button),
               onPressed: () {
                 // Jumps to the result page.
                 _tabController.animateTo(1);
@@ -301,17 +315,17 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
       barrierDismissible: false,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Oops!'),
+          title: Text(AppLocalizations.of(context).dialog_failed_empty_title),
           content: SingleChildScrollView(
             child: Column(
               children: <Widget>[
-                Text('Please select response to all answers.'),
+                Text(AppLocalizations.of(context).dialog_failed_empty_content),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('OK'),
+              child: Text(AppLocalizations.of(context).dialog_succeed_button),
               onPressed: () {
                 Navigator.of(context).pop();
               },
