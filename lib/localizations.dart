@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show SynchronousFuture;
 import 'package:flutter/material.dart';
+import 'survey.dart';
 
 class AppLocalizations {
   AppLocalizations(this.locale);
@@ -83,6 +84,15 @@ class AppLocalizations {
   String get dialog_failed_empty_button {
     return _localizedValues[locale.languageCode]![
         'dialog_failed_empty_button']!;
+  }
+
+  static Map<String, Survey> _localizedSurveys = {
+    'en': EnSurvey(),
+    'zh': ZhSurvey()
+  };
+
+  Survey get survey {
+    return _localizedSurveys[locale.languageCode]!;
   }
 }
 

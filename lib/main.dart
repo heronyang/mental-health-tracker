@@ -46,6 +46,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
   List<int> _pendingScores = [];
   List<HistoryRecord> _records = [];
   final String storageKey = 'records';
+  final int numberOfQuestions = 10; // NOTE: Always sync with survey.dart.
 
   late TabController _tabController;
 
@@ -150,13 +151,13 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
       alignment: Alignment.centerLeft,
       child: Container(
         padding: EdgeInsets.all(15),
-        child: Text(Survey.getIntro()),
+        child: Text(AppLocalizations.of(context).survey.getIntro()),
       ),
     );
   }
 
   Widget _buildQuestions() {
-    List<String> questions = Survey.getQuestions();
+    List<String> questions = AppLocalizations.of(context).survey.getQuestions();
     return ListView.separated(
       itemCount: questions.length + 1, // Submit button is the last row.
       itemBuilder: (context, index) {
@@ -172,7 +173,8 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
   }
 
   Widget _buildQuestion(String question, int questionIndex) {
-    List<OptionScore> optionScores = Survey.getOptionScores();
+    List<OptionScore> optionScores =
+        AppLocalizations.of(context).survey.getOptionScores();
 
     Widget questionWidget = Text(question);
     Widget optionWidget = DropdownButton<int>(
@@ -225,7 +227,7 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
 
   void _resetPendingScores() {
     setState(() {
-      _pendingScores = List<int>.filled(Survey.getQuestionSize(), 0);
+      _pendingScores = List<int>.filled(numberOfQuestions, 0);
     });
   }
 
