@@ -150,6 +150,8 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
     return Align(
       alignment: Alignment.centerLeft,
       child: Container(
+        color: Colors.teal.shade200,
+        width: double.infinity,
         padding: EdgeInsets.all(15),
         child: Text(AppLocalizations.of(context).survey.getIntro()),
       ),
