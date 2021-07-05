@@ -11,7 +11,7 @@ void main() {
     MaterialApp(
       onGenerateTitle: (BuildContext context) =>
           AppLocalizations.of(context).title,
-      home: MentalHealthTrackerApp(),
+      home: MindTrendApp(),
       theme: new ThemeData(primarySwatch: Colors.teal),
       localizationsDelegates: [
         const AppLocalizationsDelegate(),
@@ -26,10 +26,10 @@ void main() {
   );
 }
 
-class MentalHealthTrackerApp extends StatefulWidget {
-  MentalHealthTrackerApp({Key? key}) : super(key: key);
+class MindTrendApp extends StatefulWidget {
+  MindTrendApp({Key? key}) : super(key: key);
   @override
-  MentalHealthTrackerState createState() => MentalHealthTrackerState();
+  MindTrendState createState() => MindTrendState();
 }
 
 class HistoryRecord {
@@ -41,7 +41,7 @@ class HistoryRecord {
   }
 }
 
-class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
+class MindTrendState extends State<MindTrendApp>
     with SingleTickerProviderStateMixin {
   List<int> _pendingScores = [];
   List<HistoryRecord> _records = [];

@@ -26,7 +26,7 @@ class AppLocalizations {
       'dialog_failed_empty_button': 'OK',
       'dialog_welcome_title': 'Hi',
       'dialog_welcome_content':
-          'MindTrend gives you mental health test periodically to track your mental health.\n\nDisclaimer: The tool is still under development and is for testing only now.',
+          'MindTrend gives you mental health test periodically to track your scores.\n\nDisclaimer: The tool is still under development and is for testing only now.',
     },
     'zh': {
       'title': 'MindTrend - 心理健康追蹤器',
