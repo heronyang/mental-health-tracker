@@ -13,7 +13,7 @@ class AppLocalizations {
 
   static Map<String, Map<String, String>> _localizedValues = {
     'en': {
-      'title': 'Mental Health Tracker',
+      'title': 'MindTrend - Mental Health Tracker',
       'button_submit': 'Submit',
       'table_head_time': 'Time',
       'table_head_score': 'Score',
@@ -24,9 +24,12 @@ class AppLocalizations {
       'dialog_failed_empty_title': 'Oops!',
       'dialog_failed_empty_content': 'Please select response to all answers.',
       'dialog_failed_empty_button': 'OK',
+      'dialog_welcome_title': 'Hi',
+      'dialog_welcome_content':
+          'MindTrend gives you mental health test periodically to track your mental health.\n\nDisclaimer: The tool is still under development and is for testing only now.',
     },
     'zh': {
-      'title': '心理健康追蹤器',
+      'title': 'MindTrend - 心理健康追蹤器',
       'button_submit': '提交',
       'table_head_time': '時間',
       'table_head_score': '分數',
@@ -37,9 +40,11 @@ class AppLocalizations {
       'dialog_failed_empty_title': '等等',
       'dialog_failed_empty_content': '請把題目都完成後再提交',
       'dialog_failed_empty_button': '好',
+      'dialog_welcome_title': '嗨！',
+      'dialog_welcome_content':
+          '心理健康程度不容易看見，若下滑時會漸漸影響生活，嚴重時需就醫。\n這工具幫助您：定期做心理問卷，以追蹤心理健康。\n\n[免責聲明：這工具開發目前無專業心理師參與，僅作參考使用。]',
     },
   };
-
   String get title {
     return _localizedValues[locale.languageCode]!['title']!;
   }
@@ -84,6 +89,14 @@ class AppLocalizations {
   String get dialog_failed_empty_button {
     return _localizedValues[locale.languageCode]![
         'dialog_failed_empty_button']!;
+  }
+
+  String get dialog_welcome_title {
+    return _localizedValues[locale.languageCode]!['dialog_welcome_title']!;
+  }
+
+  String get dialog_welcome_content {
+    return _localizedValues[locale.languageCode]!['dialog_welcome_content']!;
   }
 
   static Map<String, Survey> _localizedSurveys = {

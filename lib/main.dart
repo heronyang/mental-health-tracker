@@ -61,6 +61,12 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
     _resetPendingScores();
     super.initState();
     _loadRecords();
+    WidgetsBinding.instance
+        ?.addPostFrameCallback((_) => _processBuildCompleted(context));
+  }
+
+  void _processBuildCompleted(BuildContext context) {
+    _showWelcomeDialog();
   }
 
   void _loadRecords() async {
@@ -324,6 +330,33 @@ class MentalHealthTrackerState extends State<MentalHealthTrackerApp>
             child: Column(
               children: <Widget>[
                 Text(AppLocalizations.of(context).dialog_failed_empty_content),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(AppLocalizations.of(context).dialog_succeed_button),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showWelcomeDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(AppLocalizations.of(context).dialog_welcome_title),
+          content: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                Text(AppLocalizations.of(context).dialog_welcome_content),
               ],
             ),
           ),
