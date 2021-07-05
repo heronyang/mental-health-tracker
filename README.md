@@ -16,7 +16,7 @@ $ echo 'web: vendor/bin/heroku-php-apache2' > Procfile
 $ echo '<?php include_once("index.html"); ?>' > index.php
 $ git init; git add .; git commit -m "Initialize."
 $ heroku git:remote -a mental-tracker
-$ git push heroku main:master
+$ git push heroku main:master --force # Overrides the existing deployed version.
 ```
 
 ## Reference
